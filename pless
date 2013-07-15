@@ -1,0 +1,102 @@
+#!/usr/bin/env ruby
+# pless -- Christian Koch <cfkoch@sdf.lonestar.org>
+
+require 'curses'
+require 'optparse'
+
+class Pless
+  DELIMITER = "!!\f!!"
+
+  def initialize(opts={})
+    if opts[:infile]
+      @title = File.basename(opts[:infile])
+      string = File.read(opts[:infile])
+    #else
+    #  @title = "(stdin)"
+    #  string = $stdin.read
+    end
+
+    Curses.init_screen
+    Curses.cbreak
+    Curses.noecho
+
+    @lines_per_page = opts[:lines_per_page] || (Curses.lines - 1)
+    @win = Curses::Window.new(@lines_per_page, Curses.cols, 0, 0)
+    @status_line = Curses::Window.new(1, Curses.cols, @lines_per_page, 0)
+
+    # Quietly insert a magic delimiter every @lines_per_page lines, then
+    # split the string by that delimiter.
+    pages_a = []
+    string.split("\n").each_with_index do |line, i|
+      pages_a[i] = line + "\n"
+      pages_a[i] += DELIMITER if (i+1) % @lines_per_page == 0
+    end
+    @pages = pages_a.join("").split(DELIMITER)
+
+    @cur_page = 0
+    @total_pages = @pages.length
+
+    update_win
+    update_status_line
+  end
+
+  def go!
+    loop do
+      ch = @win.getch
+
+      case ch
+      when 'h', 'p'
+        @cur_page -= 1 if @cur_page > 0
+      when 'l', 'n'
+        @cur_page += 1 if @cur_page < (@total_pages - 1)
+      when 'g'
+        @cur_page = 0
+      when 'G'
+        @cur_page = (@total_pages - 1)
+      when 'q'
+        break
+      end
+
+      update_win
+      update_status_line
+    end
+
+    cleanup
+  end
+
+  private
+
+  def cleanup
+    @win.close
+    @status_line.close
+  end
+
+  def update_win
+    @win.clear
+    @win.setpos(0, 0)
+    @win.addstr(@pages[@cur_page])
+    @win.refresh
+  end
+
+  def update_status_line
+    @status_line.clear
+    @status_line.setpos(0, 0)
+    @status_line.attron(Curses::A_REVERSE)
+    @status_line.addstr("[%d/%d] %s" % [@cur_page+1, @total_pages, @title])
+    @status_line.attroff(Curses::A_REVERSE)
+    @status_line.refresh
+  end
+end
+
+#####
+
+options = {}
+
+parser = OptionParser.new do |opts|
+  opts.on("-l LINES_PER_PAGE") { |l| options[:lines_per_page] = l.to_i }
+end
+parser.parse!
+
+options[:infile] = ARGV[0]
+
+Pless.new(options).go!

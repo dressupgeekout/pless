@@ -20,8 +20,6 @@ By default, pless pages "at" every (N-1) lines, where N is the height of the
 terminal. (The last line displays some status info.) You can force pless to
 page at some arbitrary interval with the **-l** option.
 
-_TODO: If a file is not provided, then pless reads from the standard input._
-
 You can navigate a document with the following keys. They're like less(1):
 
   - **h**, **p** -- previous page
@@ -29,6 +27,16 @@ You can navigate a document with the following keys. They're like less(1):
   - **g** -- first page
   - **G** -- last page
   - **q** -- quit
+
+
+NOTE. There's a TODO: If a file is not provided, then pless should read
+from the standard input. Right now I can't figure out how reconcile
+Curses' getch() function and reading the initial data from stdin. The best
+workaround for now is to use a named pipe:
+
+    $ mkfifo work
+    $ /do/something/to a_file > work &
+    $ pless work
 
 
 ## License (2-clause BSD-style)

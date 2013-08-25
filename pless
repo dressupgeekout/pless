@@ -99,4 +99,4 @@ parser.parse!
 
 options[:infile] = ARGV[0]
 
-Pless.new(options).go!
+Pless.new(options).go! if options[:infile]

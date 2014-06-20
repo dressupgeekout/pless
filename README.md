@@ -41,7 +41,7 @@ workaround for now is to use a named pipe:
 
 ## License (2-clause BSD-style)
 
-Copyright (c) 2013 Christian Koch.
+Copyright (c) 2013, 2014 Christian Koch.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

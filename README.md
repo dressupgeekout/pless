@@ -1,9 +1,5 @@
 # pless, the screen-oriented pager
 
-Christian Koch -- cfkoch@sdf.lonestar.org
-
-----
-
 **pless** is a lot like less(1), except that pages NEVER overlap. If reading
 the output of less(1) is like reading a long scroll, then **pless** reads
 like a book.
@@ -41,7 +37,7 @@ workaround for now is to use a named pipe:
 
 ## License (2-clause BSD-style)
 
-Copyright (c) 2013, 2014 Christian Koch.
+Copyright (c) 2013-2022 Charlotte Koch.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

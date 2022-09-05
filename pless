@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# pless -- Christian Koch <cfkoch@sdf.lonestar.org>
+# pless -- Charlotte Koch <charlotte@NetBSD.org>
 
 require 'curses'
 require 'optparse'
